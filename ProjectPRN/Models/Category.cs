@@ -11,6 +11,6 @@ namespace ProjectPRN.Models
         [MaxLength(50)]
         public string Name { get; set; }
 
-        public virtual ICollection<Product> Products { get; set; }
+        public virtual ICollection<Product>? Products { get; set; }
     }
 }

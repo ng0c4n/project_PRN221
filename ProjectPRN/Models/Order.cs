@@ -12,10 +12,10 @@ namespace ProjectPRN.Models
         public DateTime CreatedDate { get; set; }   
         public DateTime UpdatedDate { get; set;}
 
-        public virtual User User { get; set; }
-        public virtual Status Status { get; set; }
+        public virtual User? User { get; set; }
+        public virtual Status? Status { get; set; }
 
-        public virtual ICollection<OrderDetail> OrderDetails { get; set; }
+        public virtual ICollection<OrderDetail>? OrderDetails { get; set; }
 
 
     }
