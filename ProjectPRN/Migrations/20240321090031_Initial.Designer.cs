@@ -12,8 +12,8 @@ using ProjectPRN.Models;
 namespace ProjectPRN.Migrations
 {
     [DbContext(typeof(AppDBContext))]
-    [Migration("20240320042834_Intitial")]
-    partial class Intitial
+    [Migration("20240321090031_Initial")]
+    partial class Initial
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)

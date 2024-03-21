@@ -11,7 +11,7 @@ namespace ProjectPRN.Models
         [MaxLength(10)]
         public string Name { get; set; }
 
-        public virtual ICollection<Order> Orders { get; set; }
+        public virtual ICollection<Order>? Orders { get; set; }
 
     }
 }
