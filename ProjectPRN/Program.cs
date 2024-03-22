@@ -1,6 +1,6 @@
-using ProjectPRN.Models;
 using Microsoft.AspNetCore.Authentication.Google;
 using Microsoft.AspNetCore.Authentication.Cookies;
+using ProjectPRN.Data;
 
 var builder = WebApplication.CreateBuilder(args);
 
