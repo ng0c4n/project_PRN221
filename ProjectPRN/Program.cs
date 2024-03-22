@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Authentication.Cookies;
 
 var builder = WebApplication.CreateBuilder(args);
 
+builder.Services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
 builder.Services.AddAuthentication(options =>
 {
     options.DefaultScheme = CookieAuthenticationDefaults.AuthenticationScheme;
@@ -18,7 +19,7 @@ builder.Services.AddAuthentication(options =>
 // Add services to the container.
 builder.Services.AddControllersWithViews();
 builder.Services.AddDbContext<AppDBContext>();
-
+builder.WebHost.UseUrls("https://localhost:6200");
 using (var context = new AppDBContext())
 {
     AppDBContext.InitiateData(context);
