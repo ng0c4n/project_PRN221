@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 using ProjectPRN.Models;
 using System.Security.Claims;
 using Microsoft.EntityFrameworkCore;
+using ProjectPRN.Utils;
 
 namespace ProjectPRN.Controllers
 {
@@ -39,6 +40,7 @@ namespace ProjectPRN.Controllers
                     CookieAuthenticationDefaults.AuthenticationScheme,
                     new ClaimsPrincipal(claimsIdentity),
                     authProperties);
+                SaveUserId.SetUserID(HttpContext, user.ID.ToString());
                 return RedirectToAction("Index", "Home");
             }
             else
@@ -77,7 +79,6 @@ namespace ProjectPRN.Controllers
         private void Save(string email, string name)
         {
             var user = _dbContext.User.FirstOrDefault(u => u.Email == email);
-
             if (user == null) 
             {
                 user = new User
