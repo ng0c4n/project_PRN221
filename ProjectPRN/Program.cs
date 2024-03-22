@@ -29,11 +29,11 @@ builder.Services.AddAuthentication(options =>
 // Add services to the container.
 builder.Services.AddControllersWithViews();
 builder.Services.AddDbContext<AppDBContext>();
-
+/*
 using (var context = new AppDBContext())
 {
     AppDBContext.InitiateData(context);
-}
+}*/
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
