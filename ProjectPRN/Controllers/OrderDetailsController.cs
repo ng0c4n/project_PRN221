@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using ProjectPRN.Data;
 using ProjectPRN.Models;
+using ProjectPRN.ViewModels;
 
 namespace ProjectPRN.Controllers
 {
@@ -22,9 +23,33 @@ namespace ProjectPRN.Controllers
         // GET: OrderDetails
         public async Task<IActionResult> Index()
         {
-            var appDBContext = _context.OrderDetail.Include(o => o.Order).Include(o => o.Product);
-            return View(await appDBContext.ToListAsync());
+            List<Cart> cart = new List<Cart>();
+            List<Order> order = await _context.Order.Where(or => or.UserID == SaveUser.userId).ToListAsync();
+            if(order != null)
+            {
+                foreach (var o in order)
+                {
+                    var ord = await _context.OrderDetail.FirstOrDefaultAsync(od => od.OrderID == o.ID);
+                    var pro = await _context.Product.FirstOrDefaultAsync(p => p.ID == ord.ProductID);
+                    var user = await _context.User.FirstOrDefaultAsync(u => u.ID == SaveUser.userId);
+
+                    var c = new Cart
+                    {
+                        UserName = user.Name,
+                        ProductName = pro.Name,
+                        Image = pro.Image,
+                        Price = pro.Price,
+                        Quantity = ord.Quantity,
+                        CreatedDate = o.CreatedDate
+                    };
+                    cart.Add(c);
+                }
+                return View(cart.ToList());
+            }
+            return null;
         }
+
+       
 
         // GET: OrderDetails/Details/5
         public async Task<IActionResult> Details(int? id)

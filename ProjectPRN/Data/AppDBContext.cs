@@ -21,7 +21,7 @@ namespace ProjectPRN.Data
                     AddJsonFile("appsettings.json", optional: true, reloadOnChange: true);
 
                 IConfiguration configuration = builder.Build();
-                optionBuilder.UseSqlServer(configuration.GetConnectionString("DBConnect"));
+                optionBuilder.UseSqlServer(configuration.GetConnectionString("DePurete"));
             }
 
         }

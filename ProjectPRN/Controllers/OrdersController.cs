@@ -4,11 +4,9 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
-using Microsoft.CodeAnalysis;
 using Microsoft.EntityFrameworkCore;
 using ProjectPRN.Data;
 using ProjectPRN.Models;
-using static NuGet.Packaging.PackagingConstants;
 
 namespace ProjectPRN.Controllers
 {
@@ -74,46 +72,7 @@ namespace ProjectPRN.Controllers
             return View(order);
         }
 
-
-
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> AddToCart(Order Order, OrderDetail OrderDetails, string ProductId)
-        {
-            if (!ModelState.IsValid || _context.Order == null || _context.OrderDetail == null
-                || OrderDetails == null || Order == null )
-            {
-                return RedirectToAction("Index", "Products");
-            }
-
-            Order = new Order
-            {
-                UserID = SaveUser.userId,
-                StatusID = 3,
-                CreatedDate = DateTime.Now,
-                UpdatedDate = DateTime.Now
-
-            };
-
-            _context.Order.Add(Order);
-
-            await _context.SaveChangesAsync();
-
-            OrderDetails = new OrderDetail
-            {
-                OrderID = Order.ID,
-                ProductID = int.Parse(ProductId),
-                Quantity = 1,
-            };
-
-            _context.OrderDetail.Add(OrderDetails);
-
-            await _context.SaveChangesAsync();
-
-
-            return null;
-
-        }
+       
 
         // GET: Orders/Edit/5
         public async Task<IActionResult> Edit(int? id)

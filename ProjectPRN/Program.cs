@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Authentication.Google;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using ProjectPRN.Data;
+using SignalRAssignment;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -17,7 +18,12 @@ builder.Services.AddAuthentication(options =>
 });
 // Add services to the container.
 builder.Services.AddControllersWithViews();
+
+builder.Services.AddSignalR();
+builder.Services.AddSingleton<SignalHub>();
+
 builder.Services.AddDbContext<AppDBContext>();
+
 
 using (var context = new AppDBContext())
 {
@@ -39,6 +45,7 @@ app.UseStaticFiles();
 app.UseRouting();
 
 app.UseAuthorization();
+app.MapHub<SignalHub>("/signalrServer");
 
 app.MapControllerRoute(
     name: "default",
