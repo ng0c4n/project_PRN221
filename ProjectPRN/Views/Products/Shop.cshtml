@@ -1,7 +1,7 @@
 ﻿@model IEnumerable<ProjectPRN.Models.Product>
 
 @{
-    ViewData["Title"] = "Index";
+    ViewData["Title"] = "Shop";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
@@ -13,13 +13,12 @@
             </h2>
         </div>
         <div class="row">
-            <div class="col-3">
+            <div class="col-3 p-0">
                 <input class="form-control" type="text" id="searchInput" placeholder="Enter search term...">
 
             </div>
-
             <div class="col-3">
-                <button class="btn btn-primary" id="searchButton">Search</button>
+                <button class="btn btn-outline-primary" id="searchButton">🔎</button>
             </div>
             
         </div>
@@ -32,10 +31,3 @@
         <button class="btn btn-outline-primary" id="nextPage">Next</button>
     </div>
 </section>
-@section Scripts {
-    <script>
-        
-
-
-    </script>
-}

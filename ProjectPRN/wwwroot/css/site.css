@@ -17,7 +17,7 @@ body {
 }
 
 .layout_padding2-top {
-    padding-top: 45px;
+    padding-top: 5px;
 }
 
 .layout_padding2-bottom {
@@ -741,7 +741,6 @@ a:focus {
     position: relative;
     background-color: #2d2d2d;
     color: #ffffff;
-    margin: 0 45px 45px;
 }
 
     .info_section .social_container {

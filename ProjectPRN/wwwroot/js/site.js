@@ -2,7 +2,7 @@
 
 $(() => {
     var currentPage = 1;
-    var pageSize = 5;
+    var pageSize = 8;
 
     var connection = new signalR.HubConnectionBuilder().withUrl("/signalrServer").build();
 
@@ -55,35 +55,37 @@ $(() => {
                             </div>
 
                             <!-- Modal -->
-                            <div class="modal fade" id="staticBackdrop${v.id}" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+                            <div class="modal fade" id="staticBackdrop${v.id}" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
                                 <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
                                     <div class="modal-content">
-                                        <div class="modal-header" style="background-color:violet;">
+                                        <div class="modal-header" style="background-color:#f9ece6;">
                                             <h5 class="modal-title" id="staticBackdropLabel">Add to card</h5>
                                             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                                         </div>
                                         <div class="modal-body">
                                            <form id="AddCartForm" method="post" asp-page-handler="AddToCart">
                                                 <div class="form-actions no-color">
-                                                    <p>
+                                                    <div>
                                                         <input id="productId" value="${v.id}" class="form-control" type="text" hidden/>
                                                         
                                                         Product Name:
                                                         <input id="productName" value="${v.name}" class="form-control" type="text" disabled/>
-                                                        <img src="${v.image}" alt="">
-                                                        Descriptiom:
-                                                        <p id="description" class="form-control" type="text">
+                                                        <img class="py-2" style="height:200px;" id="img-preview" src="${v.image}" alt="">
+                                                        
+                                                       <p>Description:
+                                                        <label id="description">
                                                             ${v.description}
-                                                        </p>
+                                                        </label>
+                                                       </p> 
                                                         Price Per One:
                                                         <input id="price"  value="${v.price}" class="form-control" type="number" disabled/>
                                                         Quantity:
                                                         <input id="quantity" class="form-control" type="number"/>
 
-                                                        <div class="text-end">
-                                                            <input type="submit" value="Submit" class="btn btn-primary m-1" />
+                                                        <div class="text-end text-white">
+                                                            <input type="submit" value="✔️" class="btn btn-outline-success m-2 " />
                                                         </div>
-                                                    </p>
+                                                    </div>
                                                 </div>
                                             </form>
                                             <div id="reportTable"></div>
@@ -137,7 +139,7 @@ $(() => {
 
     function updatePaginationUI(page) {
         $('#prevPage').prop('disabled', page === 1);
-        $('#nextPage').prop('disabled', $('.tableBody tr').length < pageSize);
+        $('#nextPage').prop('disabled', $('.item-product>div').length < pageSize);
     }
 
     $('#searchButton').click(() => {
@@ -175,7 +177,7 @@ $(() => {
                     <div class="box rounded">
                         <div>
                             <div class="img-box">
-                                <img src=${v.image} alt="">
+                                <img src="${v.image}" alt="">
                             </div>
                             <div class="detail-box">
                                 <h6>
@@ -196,35 +198,39 @@ $(() => {
                                 </span>
                             </div>
                             <div class="w-100 text-end">
-                                <button type="button" class="btn btn-success my-1" data-bs-toggle="modal" data-bs-target="#staticBackdrop">
+                                <button type="button" class="btn btn-success my-1" data-bs-toggle="modal" data-bs-target="#staticBackdrop${v.id}">
                                     Add to cart
                                 </button>
                             </div>
 
                             <!-- Modal -->
-                            <div class="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+                            <div class="modal fade" id="staticBackdrop${v.id}" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
                                 <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
                                     <div class="modal-content">
-                                        <div class="modal-header" style="background-color:violet;">
+                                        <div class="modal-header" style="background-color:#f9ece6;">
                                             <h5 class="modal-title" id="staticBackdropLabel">Add to card</h5>
                                             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                                         </div>
                                         <div class="modal-body">
-                                            <form id="AddCartForm" method="post" asp-page-handler="AddToCart">
+                                           <form id="AddCartForm" method="post" asp-page-handler="AddToCart">
                                                 <div class="form-actions no-color">
                                                     <p>
+                                                        <input id="productId" value="${v.id}" class="form-control" type="text" hidden/>
+                                                        
                                                         Product Name:
                                                         <input id="productName" value="${v.name}" class="form-control" type="text" disabled/>
-                                                        <img src="${v.image}" alt="">
+                                                       <img class="py-2" style="height:200px;" id="img-preview" src="${v.image}" alt="">
                                                         Descriptiom:
-                                                        <input id="description"  value="${v.description}" class="form-control" type="text" disabled/>
+                                                        <p id="description">
+                                                            ${v.description}
+                                                        </p>
                                                         Price Per One:
                                                         <input id="price"  value="${v.price}" class="form-control" type="number" disabled/>
                                                         Quantity:
                                                         <input id="quantity" class="form-control" type="number"/>
 
-                                                        <div class="text-end">
-                                                            <input type="submit" value="Submit" class="btn btn-primary m-1" />
+                                                        <div class="text-end text-white">
+                                                            <input type="submit" value="✔️" class="btn btn-outline-success m-1" />
                                                         </div>
                                                     </p>
                                                 </div>

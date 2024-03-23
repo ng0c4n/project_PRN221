@@ -21,7 +21,7 @@ namespace ProjectPRN.Controllers
         }
 
         // GET: OrderDetails
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Cart()
         {
             List<Cart> cart = new List<Cart>();
             List<Order> order = await _context.Order.Where(or => or.UserID == SaveUser.userId).ToListAsync();
@@ -35,6 +35,8 @@ namespace ProjectPRN.Controllers
 
                     var c = new Cart
                     {
+                        OrderID = ord.OrderID,
+                        ProductID = ord.ProductID,
                         UserName = user.Name,
                         ProductName = pro.Name,
                         Image = pro.Image,
@@ -175,17 +177,20 @@ namespace ProjectPRN.Controllers
         // POST: OrderDetails/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteConfirmed(int id)
+        public async Task<IActionResult> DeleteConfirmed(int orderID, int productID)
         {
-            var orderDetail = await _context.OrderDetail.FindAsync(id);
+            var orderDetail = await _context.OrderDetail.FindAsync(orderID, productID);
+            var order = await _context.Order.FirstOrDefaultAsync(o => o.ID == orderID);
             if (orderDetail != null)
             {
                 _context.OrderDetail.Remove(orderDetail);
+                _context.Order.Remove(order);
             }
 
             await _context.SaveChangesAsync();
-            return RedirectToAction(nameof(Index));
+            return RedirectToAction("Cart", "OrderDetails");
         }
+
 
         private bool OrderDetailExists(int id)
         {
