@@ -1,6 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
-namespace ProjectPRN.Models
+using ProjectPRN.Models;
+namespace ProjectPRN.Data
 {
     public class AppDBContext : DbContext
     {
@@ -30,7 +31,7 @@ namespace ProjectPRN.Models
             {
                 entity.ToTable("Category");
 
-                entity.HasMany(a => a.Products).WithOne(a=>a.Category);
+                entity.HasMany(a => a.Products).WithOne(a => a.Category);
             });
 
             modelBuilder.Entity<Order>(entity =>
@@ -43,7 +44,7 @@ namespace ProjectPRN.Models
 
                 entity.HasOne(a => a.Status).WithMany(a => a.Orders).HasForeignKey(a => a.StatusID);
 
-                entity.HasMany(a => a.OrderDetails).WithOne(a => a.Order).HasForeignKey(a=>a.OrderID);
+                entity.HasMany(a => a.OrderDetails).WithOne(a => a.Order).HasForeignKey(a => a.OrderID);
             });
 
             modelBuilder.Entity<OrderDetail>(entity =>
@@ -85,15 +86,15 @@ namespace ProjectPRN.Models
 
                 entity.HasMany(a => a.Orders).WithOne(a => a.User).HasForeignKey(a => a.UserID);
             });
-            base.OnModelCreating(modelBuilder); 
+            base.OnModelCreating(modelBuilder);
         }
         public static void InitiateData(AppDBContext context)
         {
             context.Status.AddRange(
-                new Models.Status { Name = "waiting" },
-                new Models.Status { Name = "approved" },
-                new Models.Status { Name = "shipping" },
-                new Models.Status { Name = "finish" }
+                new Status { Name = "waiting" },
+                new Status { Name = "approved" },
+                new Status { Name = "shipping" },
+                new Status { Name = "finish" }
                 );
             //context.Category.AddRange(new Category { Name = })
         }

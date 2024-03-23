@@ -1,6 +1,7 @@
-using ProjectPRN.Models;
 using Microsoft.AspNetCore.Authentication.Google;
 using Microsoft.AspNetCore.Authentication.Cookies;
+using ProjectPRN.Data;
+using SignalRAssignment;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -21,6 +22,10 @@ builder.Services.AddAuthentication(options =>
 });
 // Add services to the container.
 builder.Services.AddControllersWithViews();
+
+builder.Services.AddSignalR();
+builder.Services.AddSingleton<SignalHub>();
+
 builder.Services.AddDbContext<AppDBContext>();
 builder.WebHost.UseUrls("https://localhost:6200");
 builder.Services.AddSession(options =>
@@ -29,6 +34,7 @@ builder.Services.AddSession(options =>
     options.Cookie.HttpOnly = true;
     options.Cookie.IsEssential = true;
 });
+
 using (var context = new AppDBContext())
 {
     AppDBContext.InitiateData(context);
@@ -50,6 +56,7 @@ app.UseRouting();
 
 app.UseAuthentication();
 app.UseAuthorization();
+app.MapHub<SignalHub>("/signalrServer");
 
 app.UseSession();
 

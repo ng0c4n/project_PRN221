@@ -10,6 +10,8 @@ namespace ProjectPRN.Models
         [Column(TypeName = "NVARCHAR")]
         [MaxLength(50)]
         public string Name { get; set; }
+
+        [DataType(DataType.Date)]
         public DateTime Dob { get; set; }
         [Column(TypeName = "VARCHAR")]
         [MaxLength(100)]

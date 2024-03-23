@@ -7,6 +7,14 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="wwwroot\lib\microsoft\**" />
+    <Content Remove="wwwroot\lib\microsoft\**" />
+    <EmbeddedResource Remove="wwwroot\lib\microsoft\**" />
+    <None Remove="wwwroot\lib\microsoft\**" />
+    <TypeScriptCompile Remove="wwwroot\lib\microsoft\**" />
+  </ItemGroup>
+
+  <ItemGroup>
 	  <PackageReference Include="Microsoft.AspNetCore.Authentication.Google" Version="8.0.3" />
 	  <PackageReference Include="Microsoft.AspNetCore.Components.QuickGrid.EntityFrameworkAdapter" Version="8.0.3" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="8.0.3">
@@ -20,6 +28,10 @@
     </PackageReference>
     <PackageReference Include="Microsoft.Extensions.Configuration" Version="8.0.0" />
     <PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="8.0.0" />
+    <PackageReference Include="Microsoft.TypeScript.MSBuild" Version="5.4.3">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
     <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="8.0.2" />
   </ItemGroup>
 
