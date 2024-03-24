@@ -14,15 +14,13 @@ namespace ProjectPRN.Models
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionBuilder)
         {
-            {
+            
                 var builder = new ConfigurationBuilder().
                     SetBasePath(Directory.GetCurrentDirectory()).
                     AddJsonFile("appsettings.json", optional: true, reloadOnChange: true);
 
                 IConfiguration configuration = builder.Build();
                 optionBuilder.UseSqlServer(configuration.GetConnectionString("DePurete"));
-            }
-
         }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
