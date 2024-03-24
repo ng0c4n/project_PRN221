@@ -5,18 +5,18 @@
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<section class="h-100 h-custom w-100" style="background-color: #eee;">
+<section class="h-100 h-custom w-100 py-2">
     <div class="h-100 w-100">
         <div class="row d-flex justify-content-center align-items-center h-100">
             <div class="col">
                 <div class="card">
-                    <div class="card-body p-4">
+                    <div class="card-body p-5" style="min-height:50rem">
 
                         <div class="row">
 
                             <div class="col-lg-7">
                                 <h5 class="mb-3">
-                                    <a href="../Products" class="text-body">
+                                    <a href="../Products/Shop" class="text-body">
                                         <i class="fas fa-long-arrow-alt-left me-2"></i>Continue shopping
                                     </a>
                                 </h5>
@@ -28,9 +28,9 @@
                                         <p class="mb-0">You have @Model.Count() items in your cart</p>
                                     </div>
                                 </div>
+                                    @foreach(var item in Model){
 
                                 <div class="card mb-3">
-                                    @foreach(var item in Model){
                                     <div class="card-body">
                                         <div class="d-flex justify-content-between">
                                             <div class="d-flex flex-row align-items-center">
@@ -40,22 +40,31 @@
                                                 </div>
                                                 <div class="ms-3">
                                                     <h5>@item.ProductName</h5>
-                                                    <p class="small mb-0">@item.CreatedDate.ToString("dd/MM/yyyy")</p>
+                                                    <p class="small mb-0">@item.CreatedDate</p>
                                                 </div>
                                             </div>
+                                                <div class="text-primary d-flex flex-row align-items-center">
+
+                                                    <h5 class="fw-normal mb-0">Quantity: @item.Quantity</h5>
+                                                </div>
                                             <div class="d-flex flex-row align-items-center">
-                                                <div style="width: 50px;">
-                                                    <h5 class="fw-normal mb-0">@item.Quantity</h5>
+                                                
+                                                <div class="text-success" style="">
+                                                    <h5 class="mb-0"> $@item.Price </h5>
                                                 </div>
-                                                <div style="">
-                                                    <h5 class="mb-0">$ @item.Price</h5>
-                                                </div>
-                                                <a href="#!" style="color: #cecece;"><i class="fas fa-trash-alt"></i></a>
+
+                                                    <form method="post" asp-action="Delete">
+                                                        <input type="hidden" name="orderID" value="@item.OrderID" />
+                                                        <input type="hidden" name="productID" value="@item.ProductID" />
+                                                        <input type="submit" value="🗑" class="btn btn-danger m-1" />
+                                                    </form>
+                                                <a href="#!" style="color: #cecece;"></a>
                                             </div>
                                         </div>
                                     </div>
-                                    }
                                 </div>
+                                }
+
                             </div>
                             <div class="col-lg-5">
 
@@ -63,8 +72,7 @@
                                     <div class="card-body">
                                         <div class="d-flex justify-content-between align-items-center mb-4">
                                             <h5 class="mb-0">Card details</h5>
-                                            <img src="https://mdbcdn.b-cdn.net/img/Photos/Avatars/avatar-6.webp"
-                                                 class="img-fluid rounded-3" style="width: 45px;" alt="Avatar">
+                                            
                                         </div>
 
                                         <form class="mt-4">
@@ -79,7 +87,7 @@
 
                                         <div class="d-flex justify-content-between">
                                             <p class="mb-2">Subtotal</p>
-                                            <p class="mb-2">$@Model.Sum(item => item.Price * item.Quantity).ToString("0.00")</p>
+                                            <p class="mb-2">$@Model.Sum(item => item.Price * item.Quantity)</p>
                                         </div>
 
                                         <div class="d-flex justify-content-between">

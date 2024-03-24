@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
@@ -16,16 +17,18 @@ namespace ProjectPRN.Controllers
     {
         private readonly AppDBContext _context;
         private readonly SignalHub _signalHub;
+        private readonly IHostEnvironment _env;
 
 
-        public ProductsController(AppDBContext context, SignalHub signalHub)
+        public ProductsController(AppDBContext context, SignalHub signalHub, IHostEnvironment env)
         {
             _context = context;
             _signalHub = signalHub;
+            _env = env;
         }
 
         // GET: Products
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Shop()
         {
             //var appDBContext = _context.Product.Include(p => p.Category);
             //return View(await appDBContext.ToListAsync());
@@ -141,19 +144,55 @@ namespace ProjectPRN.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("ID,CategoryID,Name,Description,Price,Image,CreateAt,UpdateAt")] Product product)
+        public async Task<IActionResult> Create([Bind("ID,CategoryID,Name,Description,Price,CreateAt,UpdateAt")] Product product)
         {
-            if (ModelState.IsValid)
+            if (product != null)
             {
+                var productsLenght = _context.Product.Count();
                 _context.Add(product);
+                await UploadImage(product, productsLenght + 1);
                 await _context.SaveChangesAsync();
                 await _signalHub.Clients.All.SendAsync("LoadProducts");
 
-                return RedirectToAction(nameof(Index));
+                return RedirectToAction(nameof(Shop));
             }
             ViewData["CategoryID"] = new SelectList(_context.Category, "ID", "ID", product.CategoryID);
             return View(product);
         }
+
+        public async Task UploadImage(Product product, int nameImage)
+        {
+            var files = HttpContext.Request.Form.Files;
+            if (files != null && files.Count > 0)
+            {
+                foreach (var file in files)
+                {
+                    var newFileName = nameImage.ToString() + ".png";
+                    var filePath = Path.Combine(_env.ContentRootPath, "wwwroot\\image", newFileName);
+                    product.Image = "/image/" + newFileName;
+
+                    if (System.IO.File.Exists(filePath))
+                    {
+                        System.IO.File.Delete(filePath);
+                    }
+
+                    using (var fileStream = new FileStream(filePath, FileMode.Create))
+                    {
+                        await file.CopyToAsync(fileStream);
+                    }
+                }
+            }
+        }
+
+        public async Task DeleteImage(Product product)
+        {
+            var filePath = Path.Combine(_env.ContentRootPath, "wwwroot\\image", Path.GetFileName(product.Image));
+            if (System.IO.File.Exists(filePath))
+            {
+                System.IO.File.Delete(filePath);
+            }
+        }
+
 
         // GET: Products/Edit/5
         public async Task<IActionResult> Edit(int? id)
@@ -184,11 +223,11 @@ namespace ProjectPRN.Controllers
                 return NotFound();
             }
 
-            if (ModelState.IsValid)
-            {
+            
                 try
                 {
                     _context.Update(product);
+                    await UploadImage(product, product.ID);
                     await _context.SaveChangesAsync();
                     await _signalHub.Clients.All.SendAsync("LoadProducts");
 
@@ -204,10 +243,8 @@ namespace ProjectPRN.Controllers
                         throw;
                     }
                 }
-                return RedirectToAction(nameof(Index));
-            }
-            ViewData["CategoryID"] = new SelectList(_context.Category, "ID", "ID", product.CategoryID);
-            return View(product);
+                return RedirectToAction(nameof(Shop));
+            
         }
 
         // GET: Products/Delete/5
@@ -239,11 +276,11 @@ namespace ProjectPRN.Controllers
             {
                 _context.Product.Remove(product);
             }
-
+            await DeleteImage(product);
             await _context.SaveChangesAsync();
             await _signalHub.Clients.All.SendAsync("LoadProducts");
 
-            return RedirectToAction(nameof(Index));
+            return RedirectToAction(nameof(Shop));
         }
 
         private bool ProductExists(int id)
