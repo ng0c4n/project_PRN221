@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using ProjectPRN.Data;
 using ProjectPRN.Models;
 
 namespace ProjectPRN.Controllers

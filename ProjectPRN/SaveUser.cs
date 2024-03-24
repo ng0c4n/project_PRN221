@@ -2,6 +2,6 @@
 {
     public interface SaveUser
     {
-        static int userId;
+        static int userId = 1;
     }
 }

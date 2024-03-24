@@ -1,5 +1,3 @@
-"use strict";
-
 $(() => {
     var currentPage = 1;
     var pageSize = 5;
@@ -8,7 +6,6 @@ $(() => {
 
     connection.start();
     LoadPostData(currentPage, pageSize);
-
     connection.on("LoadProducts", function () {
         LoadPostData(currentPage, pageSize);
     });
@@ -132,9 +129,6 @@ $(document).on('submit', '#AddCartForm', function (event) {
         }
     });
 });
-
-
-
 
 function updatePaginationUI(page) {
     $('#prevPage').prop('disabled', page === 1);

@@ -6,6 +6,7 @@ using ProjectPRN.Models;
 using System.Security.Claims;
 using Microsoft.EntityFrameworkCore;
 using ProjectPRN.Utils;
+using ProjectPRN.Data;
 
 namespace ProjectPRN.Controllers
 {

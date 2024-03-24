@@ -4,19 +4,23 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.AspNetCore.SignalR;
 using Microsoft.EntityFrameworkCore;
 using ProjectPRN.Data;
 using ProjectPRN.Models;
+using SignalRAssignment;
 
 namespace ProjectPRN.Controllers
 {
     public class OrdersController : Controller
     {
         private readonly AppDBContext _context;
+        private readonly SignalHub _signalHub;
 
-        public OrdersController(AppDBContext context)
+        public OrdersController(AppDBContext context, SignalHub signalHub)
         {
             _context = context;
+            _signalHub = signalHub;
         }
 
         // GET: Orders
@@ -65,6 +69,7 @@ namespace ProjectPRN.Controllers
             {
                 _context.Add(order);
                 await _context.SaveChangesAsync();
+                await _signalHub.Clients.All.SendAsync("LoadDashboards");
                 return RedirectToAction(nameof(Index));
             }
             ViewData["StatusID"] = new SelectList(_context.Status, "ID", "ID", order.StatusID);
