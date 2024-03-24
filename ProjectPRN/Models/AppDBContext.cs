@@ -14,15 +14,13 @@ namespace ProjectPRN.Models
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionBuilder)
         {
-            {
+            
                 var builder = new ConfigurationBuilder().
                     SetBasePath(Directory.GetCurrentDirectory()).
                     AddJsonFile("appsettings.json", optional: true, reloadOnChange: true);
 
                 IConfiguration configuration = builder.Build();
                 optionBuilder.UseSqlServer(configuration.GetConnectionString("DePurete"));
-            }
-
         }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -75,6 +73,14 @@ namespace ProjectPRN.Models
                 entity.HasKey(a => a.ID);
 
                 entity.HasMany(a => a.Orders).WithOne(a => a.Status).HasForeignKey(a => a.StatusID);
+
+                entity.HasData(
+                   new Status { ID = 1, Name = "Cart" },
+                   new Status { ID = 2, Name = "Waiting" },
+                   new Status { ID = 3, Name = "Approved" },
+                   new Status { ID = 4, Name = "Shipping" },
+                   new Status { ID = 5, Name = "Finished" }
+                 );
             });
 
             modelBuilder.Entity<User>(entity =>
@@ -85,6 +91,7 @@ namespace ProjectPRN.Models
 
                 entity.HasMany(a => a.Orders).WithOne(a => a.User).HasForeignKey(a => a.UserID);
             });
+            
             base.OnModelCreating(modelBuilder); 
         }
         public static void InitiateData(AppDBContext context)

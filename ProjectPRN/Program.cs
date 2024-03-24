@@ -1,8 +1,19 @@
 using ProjectPRN.Models;
 using Microsoft.AspNetCore.Authentication.Google;
 using Microsoft.AspNetCore.Authentication.Cookies;
+using Net.payOS;
+
+
+IConfiguration configuration = new ConfigurationBuilder().AddJsonFile("appsettings.json").Build();
+
+PayOS payOS = new PayOS(configuration["Environment:PAYOS_CLIENT_ID"] ?? throw new Exception("Cannot find environment"),
+                    configuration["Environment:PAYOS_API_KEY"] ?? throw new Exception("Cannot find environment"),
+                    configuration["Environment:PAYOS_CHECKSUM_KEY"] ?? throw new Exception("Cannot find environment"));
+
 
 var builder = WebApplication.CreateBuilder(args);
+
+builder.Services.AddSingleton(payOS);
 
 builder.Services.AddAuthentication(options =>
 {
@@ -30,7 +41,7 @@ builder.Services.AddSession(options =>
 using (var context = new AppDBContext())
 {
     AppDBContext.InitiateData(context);
-}
+}*/
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.

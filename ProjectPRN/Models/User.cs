@@ -17,7 +17,7 @@ namespace ProjectPRN.Models
         [Column(TypeName = "VARCHAR")]
         [MaxLength(100)]
         public string Password { get; set; }
-        public int Role { get; set; }
+        public int RoleID { get; set; }
 
 
         public virtual ICollection<Order>? Orders { get; set; }
