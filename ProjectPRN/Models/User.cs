@@ -1,8 +1,10 @@
 ﻿using System.ComponentModel.DataAnnotations.Schema;
 using System.ComponentModel.DataAnnotations;
+using Microsoft.EntityFrameworkCore;
 
 namespace ProjectPRN.Models
 {
+    [Index(nameof(Email), IsUnique = true)]
     public class User
     {
         [Key, DatabaseGenerated(DatabaseGeneratedOption.Identity)]
@@ -13,6 +15,7 @@ namespace ProjectPRN.Models
         public DateTime Dob { get; set; }
         [Column(TypeName = "VARCHAR")]
         [MaxLength(100)]
+        [Required]
         public string Email { get; set; }
         [Column(TypeName = "VARCHAR")]
         [MaxLength(100)]
