@@ -112,6 +112,7 @@ public class DashboardsController : Controller
                 totalIncomeInYear += orderDetail.Quantity * orderDetail.Product.Price;
             }
         }
+        var userName = _context.User.FirstOrDefault(p => p.ID == SaveUser.userId).Name;
         //-------------
         var result = new
         {
@@ -127,7 +128,7 @@ public class DashboardsController : Controller
             TotalOrderDetails = totalOrderDetails,
             TotalIncomeInYear = totalIncomeInYear,
             OrdersInMonth = ordersInMonth.ToList(),
-            UserName = "TCNJK",
+            UserName = userName,
         };
 
         return Ok(result);
