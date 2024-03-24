@@ -23,6 +23,8 @@ namespace ProjectPRN.Models
 
 
         public virtual ICollection<Order>? Orders { get; set; }
+        public virtual UserRole UserRole { get; set; }
+
 
     }
 }

@@ -155,9 +155,11 @@ namespace ProjectPRN.Controllers
         {
             if (product != null)
             {
-                var productIdMax = _context.Product.Max(p =>p.ID);
+                product.Image = "";
                 _context.Add(product);
-                await UploadImage(product, productIdMax + 1);
+                _context.SaveChanges();
+
+                await UploadImage(product, product.ID);
                 await _context.SaveChangesAsync();
                 await _signalHub.Clients.All.SendAsync("LoadProducts");
                 await _signalHub.Clients.All.SendAsync("LoadDashboards");

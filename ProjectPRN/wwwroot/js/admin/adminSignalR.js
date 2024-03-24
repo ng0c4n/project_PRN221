@@ -5,9 +5,12 @@
     connection.start();
     LoadDashboard();
     LoadProductAdminData();
-    LoadUserAccoutData();
+    LoadUserAccountData();
     connection.on("LoadDashboards", function () {
         LoadDashboard();
+    });
+    connection.on("LoadUserAccount", function () {
+        LoadUserAccountData();
     });
 });
 
@@ -36,6 +39,7 @@ function LoadDashboard() {
 }
 
 function OrderStatics(statics) {
+    $('#orderStatisticsChart').text('');
     const chartOrderStatistics = document.querySelector('#orderStatisticsChart'),
         orderChartConfig = {
             chart: {
@@ -105,6 +109,7 @@ function OrderStatics(statics) {
             }
         };
     if (typeof chartOrderStatistics !== undefined && chartOrderStatistics !== null) {
+        chartOrderStatistics
         const statisticsChart = new ApexCharts(chartOrderStatistics, orderChartConfig);
         statisticsChart.render();
     }
@@ -138,6 +143,7 @@ function OrderStaticsTable(statics) {
 function TotalOrderInYear(statics) {
     let keys = statics.map(item => item.key);
     let values = statics.map(item => item.value);
+    $('#incomeChart').text('');
     const incomeChartEl = document.querySelector('#incomeChart'),
         incomeChartConfig = {
             series: [
@@ -299,12 +305,12 @@ function LogoutAccount() {
     });
 }
 
-function LoadUserAccoutData() {
+function LoadUserAccountData() {
     $.ajax({
         url: `/Admin/Accounts/GetUser`,
         method: 'GET',
         success: (result) => {
-            SetRoleAccountTable(result);
+            SetRoleAccountTable(result.users, result.roleList);
         },
         error: (error) => {
             console.log(error);
@@ -312,10 +318,17 @@ function LoadUserAccoutData() {
     });
 }
 
-function SetRoleAccountTable(statics) {
+function SetRoleAccountTable(statics, roleList) {
     var tr = '';
     var userUrl = '../../img/avatars/734651.png';
     $.each(statics, (k, item) => {
+        var a = '';
+        $.each(roleList, (k, items) => {
+            a +=
+                `
+                <a class="dropdown-item" onclick="SetRole(${item.id},${items.id})"><span class="badge bg-label-primary me-1">${items.name}</span></a>
+            `;
+        });
         tr += `
            <tr>
                     <td>${item.name}</td>
@@ -327,13 +340,12 @@ function SetRoleAccountTable(statics) {
                             </li>
                         </ul>
                     </td>
-                    <td><span class="badge bg-label-primary me-1">${item.role}</span></td>
+                    <td><span class="badge bg-label-primary me-1">${item.userRole.name}</span></td>
                     <td>
                         <div class="dropdown">
                             <button type="button" class="btn p-0 dropdown-toggle hide-arrow" data-bs-toggle="dropdown"><i class="bx bx-dots-vertical-rounded"></i></button>
                             <div class="dropdown-menu">
-                                <a class="dropdown-item" href="javascript:void(0);"><i class="bx bx-edit-alt me-1"></i> Edit</a>
-                                <a class="dropdown-item" href="javascript:void(0);"><i class="bx bx-trash me-1"></i> Delete</a>
+                               ${a}
                             </div>
                         </div>
                     </td>
@@ -341,4 +353,18 @@ function SetRoleAccountTable(statics) {
         `;
     })
     $("#SetRoleAccount").html(tr);
+}
+
+function SetRole(userId ,roleID) {
+    $.ajax({
+        url: `/Admin/Accounts/SetRole`,
+        method: 'POST',
+        data: { 'UserId': userId, 'RoleID': roleID},
+        success: (result) => {
+            SetRoleAccountTable(result.users, result.roleList);
+        },
+        error: (error) => {
+            console.log(error);
+        }
+    });
 }

@@ -42,7 +42,7 @@ namespace ProjectPRN.Controllers
                     new ClaimsPrincipal(claimsIdentity),
                     authProperties);
                 SaveUserId.SetUserID(HttpContext, user.ID.ToString());
-                if (user.Role > 0)
+                if (user.Role > 1)
                 {
                     return Redirect("/admin/dashboards/index");
                 }
@@ -90,7 +90,8 @@ namespace ProjectPRN.Controllers
                 {
                     Email = email,
                     Name = name,
-                    Password = email
+                    Password = email,
+                    Role = 1,
                 };
                 _dbContext.User.Add(user);
             }

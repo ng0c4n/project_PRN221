@@ -12,6 +12,8 @@ namespace ProjectPRN.Data
         public DbSet<Product> Product { get; set; }
         public DbSet<Status> Status { get; set; }
         public DbSet<User> User { get; set; }
+        public DbSet<UserRole> UserRole { get; set; }
+
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionBuilder)
         {
@@ -85,8 +87,55 @@ namespace ProjectPRN.Data
                 entity.HasKey(a => a.ID);
 
                 entity.HasMany(a => a.Orders).WithOne(a => a.User).HasForeignKey(a => a.UserID);
+                entity.HasOne(a => a.UserRole).WithMany(a => a.Users).HasForeignKey(a => a.Role);
+
             });
+
+            modelBuilder.Entity<UserRole>(entity =>
+            {
+                entity.ToTable("UserRole");
+
+                entity.HasKey(a => a.ID);
+
+                entity.HasMany(a => a.Users).WithOne(a => a.UserRole).HasForeignKey(a => a.Role);
+            });
+
             base.OnModelCreating(modelBuilder);
+
+            modelBuilder.Entity<UserRole>().HasData(
+                new UserRole
+                {
+                    ID = 1,
+                    Name = "User",
+                },
+                new UserRole
+                {
+                    ID = 2,
+                    Name = "Admin",
+                },
+                new UserRole
+                {
+                    ID= 3,
+                    Name = "Master"
+                }
+            );
+            modelBuilder.Entity<Status>().HasData(
+                new Status
+                {
+                    ID = 1,
+                    Name = "Done",
+                },
+                new Status
+                {
+                    ID = 2,
+                    Name = "Waiting",
+                },
+                new Status
+                {
+                    ID = 3,
+                    Name = "In Cart"
+                }
+            );
         }
         public static void InitiateData(AppDBContext context)
         {

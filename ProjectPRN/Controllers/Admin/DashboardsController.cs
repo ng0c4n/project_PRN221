@@ -47,7 +47,8 @@ public class DashboardsController : Controller
         {
             if (order != null)
             {
-                foreach (var orderDetail in order.OrderDetails)
+                var orderDetailsOfOrder = _context.OrderDetail.Where(od => od.OrderID == order.ID).ToList();
+                foreach (var orderDetail in orderDetailsOfOrder)
                 {
                     var product = _context.Product.Find(orderDetail.ProductID);
                     profitToday += product != null ? orderDetail.Quantity * product.Price : 0;

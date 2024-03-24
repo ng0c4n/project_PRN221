@@ -24,6 +24,7 @@ namespace ProjectPRN.Controllers
         {
             if (ModelState.IsValid)
             {
+                user.Role = 1;
                 _dbContext.Add(user);
                 await _dbContext.SaveChangesAsync();
 
