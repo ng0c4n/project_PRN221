@@ -4,20 +4,24 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.AspNetCore.SignalR;
 using Microsoft.EntityFrameworkCore;
 using ProjectPRN.Data;
 using ProjectPRN.Models;
 using ProjectPRN.ViewModels;
+using SignalRAssignment;
 
 namespace ProjectPRN.Controllers
 {
     public class OrderDetailsController : Controller
     {
         private readonly AppDBContext _context;
+        private readonly SignalHub _signalHub;
 
-        public OrderDetailsController(AppDBContext context)
+        public OrderDetailsController(AppDBContext context, SignalHub signalHub)
         {
             _context = context;
+            _signalHub = signalHub;
         }
 
         // GET: OrderDetails
@@ -92,6 +96,7 @@ namespace ProjectPRN.Controllers
             {
                 _context.Add(orderDetail);
                 await _context.SaveChangesAsync();
+                await _signalHub.Clients.All.SendAsync("LoadDashboards");
                 return RedirectToAction(nameof(Index));
             }
             ViewData["OrderID"] = new SelectList(_context.Order, "ID", "ID", orderDetail.OrderID);
@@ -151,6 +156,7 @@ namespace ProjectPRN.Controllers
             }
             ViewData["OrderID"] = new SelectList(_context.Order, "ID", "ID", orderDetail.OrderID);
             ViewData["ProductID"] = new SelectList(_context.Product, "ID", "ID", orderDetail.ProductID);
+            await _signalHub.Clients.All.SendAsync("LoadDashboards");
             return View(orderDetail);
         }
 
@@ -188,6 +194,7 @@ namespace ProjectPRN.Controllers
             }
 
             await _context.SaveChangesAsync();
+            await _signalHub.Clients.All.SendAsync("LoadDashboards");
             return RedirectToAction("Cart", "OrderDetails");
         }
 

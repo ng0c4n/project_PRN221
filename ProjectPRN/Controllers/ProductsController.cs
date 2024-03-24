@@ -36,6 +36,11 @@ namespace ProjectPRN.Controllers
             return View();
         }
 
+        public async Task<IActionResult> Index()
+        {
+            return View();
+        }
+
         [Route("/Products/GetAllProduct")]
         [HttpGet]
         public IActionResult GetAllProduct(int page = 1, int pageSize = 8)
@@ -91,7 +96,7 @@ namespace ProjectPRN.Controllers
 
                 _context.Order.Add(order);
 
-                await _context.SaveChangesAsync();
+                _context.SaveChanges();
 
                 orderDetail = new OrderDetail
                 {
@@ -102,7 +107,8 @@ namespace ProjectPRN.Controllers
 
                 _context.OrderDetail.Add(orderDetail);
 
-                await _context.SaveChangesAsync();
+                _context.SaveChanges();
+                await _signalHub.Clients.All.SendAsync("LoadDashboards");
 
                 return Ok();
             }
@@ -135,7 +141,7 @@ namespace ProjectPRN.Controllers
         // GET: Products/Create
         public IActionResult Create()
         {
-            ViewData["CategoryID"] = new SelectList(_context.Category, "ID", "ID");
+            ViewData["CategoryID"] = new SelectList(_context.Category, "ID", "Name");
             return View();
         }
 
@@ -148,15 +154,16 @@ namespace ProjectPRN.Controllers
         {
             if (product != null)
             {
-                var productsLenght = _context.Product.Count();
+                var productIdMax = _context.Product.Max(p =>p.ID);
                 _context.Add(product);
-                await UploadImage(product, productsLenght + 1);
+                await UploadImage(product, productIdMax + 1);
                 await _context.SaveChangesAsync();
                 await _signalHub.Clients.All.SendAsync("LoadProducts");
-
-                return RedirectToAction(nameof(Shop));
+                await _signalHub.Clients.All.SendAsync("LoadDashboards");
+                return RedirectToAction(nameof(Index));
             }
-            ViewData["CategoryID"] = new SelectList(_context.Category, "ID", "ID", product.CategoryID);
+            ViewData["CategoryID"] = new SelectList(_context.Category, "ID", "Name", product.CategoryID);
+
             return View(product);
         }
 
@@ -207,7 +214,8 @@ namespace ProjectPRN.Controllers
             {
                 return NotFound();
             }
-            ViewData["CategoryID"] = new SelectList(_context.Category, "ID", "ID", product.CategoryID);
+            ViewData["CategoryID"] = new SelectList(_context.Category, "ID", "Name", product.CategoryID);
+
             return View(product);
         }
 
@@ -223,28 +231,29 @@ namespace ProjectPRN.Controllers
                 return NotFound();
             }
 
-            
-                try
-                {
-                    _context.Update(product);
-                    await UploadImage(product, product.ID);
-                    await _context.SaveChangesAsync();
-                    await _signalHub.Clients.All.SendAsync("LoadProducts");
 
-                }
-                catch (DbUpdateConcurrencyException)
+            try
+            {
+                _context.Update(product);
+                await UploadImage(product, product.ID);
+                await _context.SaveChangesAsync();
+                await _signalHub.Clients.All.SendAsync("LoadProducts");
+                await _signalHub.Clients.All.SendAsync("LoadDashboards");
+
+            }
+            catch (DbUpdateConcurrencyException)
+            {
+                if (!ProductExists(product.ID))
                 {
-                    if (!ProductExists(product.ID))
-                    {
-                        return NotFound();
-                    }
-                    else
-                    {
-                        throw;
-                    }
+                    return NotFound();
                 }
-                return RedirectToAction(nameof(Shop));
-            
+                else
+                {
+                    throw;
+                }
+            }
+            return RedirectToAction(nameof(Index));
+
         }
 
         // GET: Products/Delete/5
@@ -279,8 +288,9 @@ namespace ProjectPRN.Controllers
             await DeleteImage(product);
             await _context.SaveChangesAsync();
             await _signalHub.Clients.All.SendAsync("LoadProducts");
+            await _signalHub.Clients.All.SendAsync("LoadDashboards");
 
-            return RedirectToAction(nameof(Shop));
+            return RedirectToAction(nameof(Index));
         }
 
         private bool ProductExists(int id)

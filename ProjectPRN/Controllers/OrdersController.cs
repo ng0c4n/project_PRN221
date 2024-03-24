@@ -131,6 +131,7 @@ namespace ProjectPRN.Controllers
             }
             ViewData["StatusID"] = new SelectList(_context.Status, "ID", "ID", order.StatusID);
             ViewData["UserID"] = new SelectList(_context.User, "ID", "ID", order.UserID);
+            await _signalHub.Clients.All.SendAsync("LoadDashboards");
             return View(order);
         }
 
@@ -166,6 +167,7 @@ namespace ProjectPRN.Controllers
             }
 
             await _context.SaveChangesAsync();
+            await _signalHub.Clients.All.SendAsync("LoadDashboards");
             return RedirectToAction(nameof(Index));
         }
 

@@ -1,9 +1,10 @@
-$(() => {
+﻿$(() => {
 
     var connection = new signalR.HubConnectionBuilder().withUrl("/signalrServer").build();
 
     connection.start();
     LoadDashboard();
+    LoadProductAdminData();
     connection.on("LoadDashboards", function () {
         LoadDashboard();
     });
@@ -23,6 +24,7 @@ function LoadDashboard() {
             OrderStaticsTable(result.orderStaticsObjects);
             $('#TotalOrderDetails').text(result.totalOrderDetails);
             $('#TotalIncomeInYear').text('$' + result.totalIncomeInYear);
+            $('#UserName').text(result.userName);
             TotalOrderInYear(result.ordersInMonth);
 
         },
@@ -42,6 +44,7 @@ function OrderStatics(statics) {
             },
             labels: statics.name,
             series: statics.value,
+            colors: [config.colors.primary, config.colors.secondary, config.colors.info, config.colors.success, config.colors.warning, config.colors.danger],
             stroke: {
                 width: 5,
                 colors: ['#fff']
@@ -220,12 +223,64 @@ function TotalOrderInYear(statics) {
                     show: false
                 },
                 min: 0,
-                max: 1000,
-                tickAmount: 4
+                max: Math.max(...values) ,
+                tickAmount: 5,
             }
         };
     if (typeof incomeChartEl !== undefined && incomeChartEl !== null) {
         const incomeChart = new ApexCharts(incomeChartEl, incomeChartConfig);
         incomeChart.render();
     }
+}
+
+function LoadProductAdminData(page, pageSize) {
+    var str = '';
+    $.ajax({
+        url: `/Products/GetAllProduct?page=${page}&pageSize=${pageSize}`,
+        method: 'GET',
+        success: (result) => {
+            console.log('Response:', result);
+            const tableBody = $('.item-product-admin');
+
+            tableBody.html(
+                result.map(
+                    (v) => `<div class="col-sm-6 col-md-4 col-lg-3">
+                    <div class="box rounded">
+                        <div>
+                            <div class="img-box">
+                                <img src="${v.image}" alt="">
+                            </div>
+                            <div class="detail-box">
+                                <h6>
+                                    ${v.name}
+                                </h6>
+                                <h6>
+                                    Price: 
+                                    <span>
+                                       $${v.price}
+                                    </span>
+                                </h6>
+                            </div>
+                            <div> ${v.description} </div>
+
+                            <div class="new">
+                                <span>
+                                    New
+                                </span>
+                            </div>
+                            <div class="w-100 text-end">
+                                <a type="button" class="btn btn-success my-1" href="Products/Details/${v.id}" >Details</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>`
+                ).join('')
+            );
+            $('#prevPage').prop('disabled', page === 1);
+            $('#nextPage').prop('disabled', $('.item-product>div').length < pageSize);
+        },
+        error: (error) => {
+            console.log(error);
+        }
+    });
 }
