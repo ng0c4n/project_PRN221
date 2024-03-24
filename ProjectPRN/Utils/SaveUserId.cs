@@ -8,9 +8,9 @@
             httpContext.Session.SetString(SessionKey, userID);
         }
 
-        public static string GetUserID(HttpContext httpContext)
+        public static int GetUserID(HttpContext httpContext)
         {
-            return httpContext.Session.GetString(SessionKey);
+            return int.Parse(httpContext.Session.GetString(SessionKey));
         }
     }
 }

@@ -9,6 +9,7 @@ using Microsoft.AspNetCore.SignalR;
 using Microsoft.EntityFrameworkCore;
 using ProjectPRN.Data;
 using ProjectPRN.Models;
+using ProjectPRN.Utils;
 using SignalRAssignment;
 
 namespace ProjectPRN.Controllers
@@ -87,7 +88,7 @@ namespace ProjectPRN.Controllers
 
                 order = new Order
                 {
-                    UserID = SaveUser.userId,
+                    UserID = SaveUserId.GetUserID(HttpContext),
                     StatusID = 3,
                     CreatedDate = DateTime.Now,
                     UpdatedDate = DateTime.Now

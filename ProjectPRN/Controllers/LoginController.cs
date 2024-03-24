@@ -42,6 +42,10 @@ namespace ProjectPRN.Controllers
                     new ClaimsPrincipal(claimsIdentity),
                     authProperties);
                 SaveUserId.SetUserID(HttpContext, user.ID.ToString());
+                if (user.Role > 0)
+                {
+                    return Redirect("/admin/dashboards/index");
+                }
                 return RedirectToAction("Index", "Home");
             }
             else

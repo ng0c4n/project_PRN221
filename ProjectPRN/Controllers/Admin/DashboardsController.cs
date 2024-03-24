@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.CodeAnalysis;
 using Microsoft.EntityFrameworkCore;
 using ProjectPRN.Data;
+using ProjectPRN.Utils;
 
 namespace ProjectPRN.Controllers.Admin;
 
@@ -112,7 +113,7 @@ public class DashboardsController : Controller
                 totalIncomeInYear += orderDetail.Quantity * orderDetail.Product.Price;
             }
         }
-        var userName = _context.User.FirstOrDefault(p => p.ID == SaveUser.userId).Name;
+        var userName = _context.User.FirstOrDefault(p => p.ID == SaveUserId.GetUserID(HttpContext)).Name;
         //-------------
         var result = new
         {
