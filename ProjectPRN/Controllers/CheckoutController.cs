@@ -3,12 +3,12 @@ using Net.payOS.Types;
 using Net.payOS;
 using Microsoft.EntityFrameworkCore;
 using ProjectPRN.Models;
+using ProjectPRN.Utils;
 namespace ProjectPRN.Controllers
 {
     public class CheckoutController : Controller
     {
         private readonly PayOS _payOS;
-
         public CheckoutController(PayOS payOS)
         {
             _payOS = payOS;
@@ -16,13 +16,13 @@ namespace ProjectPRN.Controllers
         }
 
         [HttpGet("/Checkout")]
-        public IActionResult Index()
+        public async Task<IActionResult> Index()
         {
 
             AppDBContext _dbContext = new AppDBContext();
 
             // get by session
-            int userID = 2;
+            int userID = Convert.ToInt32(SaveUserId.GetUserID(HttpContext));
 
             // get highest orderID of this user
             int orderID = _dbContext.Order.Where(x => x.UserID == userID && x.StatusID == 1).Max(x => x.ID);
@@ -105,8 +105,8 @@ namespace ProjectPRN.Controllers
                     items.Sum(x=> x.price * x.quantity), 
                     "Thanh toan don hang", 
                     items, 
-                    "https://localhost:7102/cancel", 
-                    "https://localhost:7102/success");
+                    "https://localhost:6200/cancel", 
+                    "https://localhost:6200/success");
 
                 CreatePaymentResult createPayment = await _payOS.createPaymentLink(paymentData);
 
@@ -115,7 +115,7 @@ namespace ProjectPRN.Controllers
             catch (System.Exception exception)
             {
                 Console.WriteLine(exception);
-                return Redirect("https://localhost:7102/");
+                return Redirect("https://localhost:6200/");
             }
         }
     }

@@ -41,7 +41,7 @@ builder.Services.AddSession(options =>
 using (var context = new AppDBContext())
 {
     AppDBContext.InitiateData(context);
-}*/
+}
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
