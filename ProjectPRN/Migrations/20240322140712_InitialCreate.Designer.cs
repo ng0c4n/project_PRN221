@@ -3,17 +3,20 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
-using ProjectPRN.Data;
+using ProjectPRN.Models;
 
 #nullable disable
 
 namespace ProjectPRN.Migrations
 {
     [DbContext(typeof(AppDBContext))]
-    partial class AppDBContextModelSnapshot : ModelSnapshot
+    [Migration("20240322140712_InitialCreate")]
+    partial class InitialCreate
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -200,44 +203,7 @@ namespace ProjectPRN.Migrations
 
                     b.HasKey("ID");
 
-                    b.HasIndex("Role");
-
                     b.ToTable("User", (string)null);
-                });
-
-            modelBuilder.Entity("ProjectPRN.Models.UserRole", b =>
-                {
-                    b.Property<int>("ID")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("ID"));
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasMaxLength(10)
-                        .HasColumnType("NVARCHAR");
-
-                    b.HasKey("ID");
-
-                    b.ToTable("UserRole", (string)null);
-
-                    b.HasData(
-                        new
-                        {
-                            ID = 1,
-                            Name = "User"
-                        },
-                        new
-                        {
-                            ID = 2,
-                            Name = "Admin"
-                        },
-                        new
-                        {
-                            ID = 3,
-                            Name = "Master"
-                        });
                 });
 
             modelBuilder.Entity("ProjectPRN.Models.Order", b =>
@@ -289,17 +255,6 @@ namespace ProjectPRN.Migrations
                     b.Navigation("Category");
                 });
 
-            modelBuilder.Entity("ProjectPRN.Models.User", b =>
-                {
-                    b.HasOne("ProjectPRN.Models.UserRole", "UserRole")
-                        .WithMany("Users")
-                        .HasForeignKey("Role")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("UserRole");
-                });
-
             modelBuilder.Entity("ProjectPRN.Models.Category", b =>
                 {
                     b.Navigation("Products");
@@ -323,11 +278,6 @@ namespace ProjectPRN.Migrations
             modelBuilder.Entity("ProjectPRN.Models.User", b =>
                 {
                     b.Navigation("Orders");
-                });
-
-            modelBuilder.Entity("ProjectPRN.Models.UserRole", b =>
-                {
-                    b.Navigation("Users");
                 });
 #pragma warning restore 612, 618
         }
