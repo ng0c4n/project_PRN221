@@ -7,11 +7,13 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.AspNetCore.SignalR;
 using Microsoft.EntityFrameworkCore;
 using ProjectPRN.Data;
+using ProjectPRN.Filter;
 using ProjectPRN.Models;
 using SignalRAssignment;
 
 namespace ProjectPRN.Controllers
 {
+    [FilterUser]
     public class OrdersController : Controller
     {
         private readonly AppDBContext _context;

@@ -5,8 +5,10 @@ using Microsoft.EntityFrameworkCore;
 using ProjectPRN.Models;
 using ProjectPRN.Utils;
 using ProjectPRN.Data;
+using ProjectPRN.Filter;
 namespace ProjectPRN.Controllers
 {
+    [FilterUser]
     public class CheckoutController : Controller
     {
         private readonly PayOS _payOS;

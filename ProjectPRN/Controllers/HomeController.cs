@@ -1,9 +1,11 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using ProjectPRN.Filter;
 using ProjectPRN.Models;
 using System.Diagnostics;
 
 namespace ProjectPRN.Controllers
 {
+    [FilterUser]
     public class HomeController : Controller
     {
         private readonly ILogger<HomeController> _logger;
