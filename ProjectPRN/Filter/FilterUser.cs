@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
 using ProjectPRN.Data;
+using ProjectPRN.Utils;
 using System.Security.Claims;
 
 namespace ProjectPRN.Filter
@@ -23,7 +24,6 @@ namespace ProjectPRN.Filter
                 filterContext.Result = new RedirectResult("~/Login/Index");
                 return;
             }
-
             var dbContext = filterContext.HttpContext.RequestServices.GetRequiredService<AppDBContext>();
 
             var user = dbContext.User.FirstOrDefault(u => u.Email == userEmail);
@@ -35,7 +35,7 @@ namespace ProjectPRN.Filter
             }
 
             int roleId = user.Role;
-
+            SaveUserId.AddToSession(filterContext.HttpContext, "UserId", user.ID);
             if (RequireAdmin && roleId <= 1)
             {
                 filterContext.Result = new RedirectResult("~/Home/Index");
