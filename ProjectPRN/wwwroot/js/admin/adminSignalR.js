@@ -1,16 +1,30 @@
 ﻿$(() => {
+    var currentPageAdmin = 1;
+    var pageSizeAdmin = 2;
 
     var connection = new signalR.HubConnectionBuilder().withUrl("/signalrServer").build();
 
     connection.start();
     LoadDashboard();
-    LoadProductAdminData();
+    LoadProductAdminData(currentPageAdmin, pageSizeAdmin);
     LoadUserAccountData();
     connection.on("LoadDashboards", function () {
         LoadDashboard();
     });
     connection.on("LoadUserAccount", function () {
         LoadUserAccountData();
+    });
+
+    $('#prevPageAdmin').click(() => {
+        if (currentPageAdmin > 1) {
+            currentPageAdmin--;
+            LoadProductAdminData(currentPageAdmin, pageSizeAdmin);
+        }
+    });
+
+    $('#nextPageAdmin').click(() => {
+        currentPageAdmin++;
+        LoadProductAdminData(currentPageAdmin, pageSizeAdmin);
     });
 });
 
@@ -240,10 +254,10 @@ function TotalOrderInYear(statics) {
     }
 }
 
-function LoadProductAdminData(page, pageSize) {
+function LoadProductAdminData(page, pageSizeAdmin) {
     var str = '';
     $.ajax({
-        url: `/Products/GetAllProduct?page=${page}&pageSize=${pageSize}`,
+        url: `/Products/GetAllProduct?page=${page}&pageSize=${pageSizeAdmin}`,
         method: 'GET',
         success: (result) => {
             console.log('Response:', result);
@@ -283,8 +297,8 @@ function LoadProductAdminData(page, pageSize) {
                 </div>`
                 ).join('')
             );
-            $('#prevPage').prop('disabled', page === 1);
-            $('#nextPage').prop('disabled', $('.item-product>div').length < pageSize);
+            $('#prevPageAdmin').prop('disabled', page === 1);
+            $('#nextPageAdmin').prop('disabled', $('.item-product-admin>div').length < pageSizeAdmin);
         },
         error: (error) => {
             console.log(error);
