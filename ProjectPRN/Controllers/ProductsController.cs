@@ -15,6 +15,7 @@ using SignalRAssignment;
 
 namespace ProjectPRN.Controllers
 {
+    [FilterUser]
     public class ProductsController : Controller
     {
         private readonly AppDBContext _context;
