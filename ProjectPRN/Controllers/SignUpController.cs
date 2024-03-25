@@ -30,7 +30,7 @@ namespace ProjectPRN.Controllers
 
                 return RedirectToAction("Index", "Login"); 
             }
-            return View(user);
+            return RedirectToAction("Index", "SignUp");
         }
     }
 }
