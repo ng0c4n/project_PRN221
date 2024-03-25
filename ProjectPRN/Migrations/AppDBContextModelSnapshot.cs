@@ -150,21 +150,26 @@ namespace ProjectPRN.Migrations
                         new
                         {
                             ID = 1,
-                            Name = "Waiting"
+                            Name = "Cart"
                         },
                         new
                         {
                             ID = 2,
-                            Name = "Approved"
+                            Name = "Waiting"
                         },
                         new
                         {
                             ID = 3,
-                            Name = "Shipping"
+                            Name = "Approved"
                         },
                         new
                         {
                             ID = 4,
+                            Name = "Shipping"
+                        },
+                        new
+                        {
+                            ID = 5,
                             Name = "Finished"
                         });
                 });
@@ -200,9 +205,23 @@ namespace ProjectPRN.Migrations
 
                     b.HasKey("ID");
 
+                    b.HasIndex("Email")
+                        .IsUnique();
+
                     b.HasIndex("Role");
 
                     b.ToTable("User", (string)null);
+
+                    b.HasData(
+                        new
+                        {
+                            ID = 1,
+                            Dob = new DateTime(2024, 3, 25, 20, 18, 38, 593, DateTimeKind.Local).AddTicks(267),
+                            Email = "admin@gmail.com",
+                            Name = "Admin",
+                            Password = "admin@gmail.com",
+                            Role = 3
+                        });
                 });
 
             modelBuilder.Entity("ProjectPRN.Models.UserRole", b =>

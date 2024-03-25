@@ -4,6 +4,7 @@ using Net.payOS;
 using Microsoft.EntityFrameworkCore;
 using ProjectPRN.Models;
 using ProjectPRN.Utils;
+using ProjectPRN.Data;
 namespace ProjectPRN.Controllers
 {
     public class CheckoutController : Controller
@@ -22,15 +23,15 @@ namespace ProjectPRN.Controllers
             AppDBContext _dbContext = new AppDBContext();
 
             // get by session
-            int userID = Convert.ToInt32(SaveUserId.GetUserID(HttpContext));
+            int userID = SaveUserId.GetSessionValue<int>(HttpContext, "UserId");
 
             // get highest orderID of this user
-            int orderID = _dbContext.Order.Where(x => x.UserID == userID && x.StatusID == 1).Max(x => x.ID);
+            var orders = _dbContext.Order.Where(x => x.UserID == userID && x.StatusID == 1);
+
 
             var model = _dbContext.OrderDetail
-                .Where(x => x.OrderID == orderID)
-                .Include(x => x.Order)
-                .Include(x => x.Product)
+                .Where(p => orders.Any(o => o.ID == p.OrderID))
+                .Include(o => o.Product)
                 .ToList();
 
             ViewBag.OrderDetail = model;
@@ -46,28 +47,13 @@ namespace ProjectPRN.Controllers
         {
             AppDBContext _dbContext = new AppDBContext();
             // get by session
-            int userID = 2;
+            int userID = SaveUserId.GetSessionValue<int>(HttpContext, "UserId");
+
             // get ỏderid 
-            var orderID = _dbContext.Order
-                .Where(x => x.UserID == userID).Max(a => a.ID);
-            // get order
-            var order = _dbContext.Order
-                .SingleOrDefault(x => x.ID == orderID);
 
-            // updating
-            order.StatusID = 2;
-            _dbContext.Attach(order).State = EntityState.Modified;
-            _dbContext.SaveChanges();
-
-            // Creating
-            _dbContext = new AppDBContext();
-            _dbContext.Add(new Order()
-            {
-                StatusID = 1,
-                UserID = userID,
-                CreatedDate = DateTime.Now,
-                UpdatedDate = DateTime.Now,
-            });
+            var orders = _dbContext.Order.Where(x => x.UserID == userID && x.StatusID == 1)
+                .ToList();
+            orders.ForEach(o => o.StatusID = 2);
             _dbContext.SaveChanges();
 
             return View("success");
@@ -79,33 +65,34 @@ namespace ProjectPRN.Controllers
             {
                 AppDBContext _dbContext = new AppDBContext();
                 // get by session
-                int userID = 2;
+                int userID = SaveUserId.GetSessionValue<int>(HttpContext, "UserId");
                 // get list product
                 int orderCode = int.Parse(DateTimeOffset.Now.ToString("ffffff"));
                 // get list 
-                int orderID = _dbContext.Order.Where(x => x.UserID == userID && x.StatusID == 1).Max(x => x.ID);
+              
+                var orders = _dbContext.Order.Where(x => x.UserID == userID && x.StatusID == 1);
+
 
                 var orderDetails = _dbContext.OrderDetail
-                                    .Where(x => x.OrderID == orderID)
-                                    .Include(x => x.Order)
-                                    .Include(x => x.Product)
-                                    .ToList();
-
+                    .Where(p => orders.Any(o => o.ID == p.OrderID))
+                    .Include(o => o.Product)
+                    .Include(x => x.Order)
+                    .ToList();
                 //ItemData item = new ItemData("Mì tôm hảo hảo ly", 1, 10000);
                 List<ItemData> items = new List<ItemData>();
-                
-                foreach(var item in orderDetails)
+
+                foreach (var item in orderDetails)
                 {
-                    items.Add(new ItemData(item.Product.Name, 
+                    items.Add(new ItemData(item.Product.Name,
                                 item.Quantity,
-                                (int) item.Product.Price));
+                                (int)item.Product.Price));
                 }
-                
-                PaymentData paymentData = new PaymentData(orderCode, 
-                    items.Sum(x=> x.price * x.quantity), 
-                    "Thanh toan don hang", 
-                    items, 
-                    "https://localhost:6200/cancel", 
+
+                PaymentData paymentData = new PaymentData(orderCode,
+                    items.Sum(x => x.price * x.quantity),
+                    "Thanh toan don hang",
+                    items,
+                    "https://localhost:6200/cancel",
                     "https://localhost:6200/success");
 
                 CreatePaymentResult createPayment = await _payOS.createPaymentLink(paymentData);
@@ -115,7 +102,7 @@ namespace ProjectPRN.Controllers
             catch (System.Exception exception)
             {
                 Console.WriteLine(exception);
-                return Redirect("https://localhost:6200/");
+                return Redirect("https://localhost:6200/Checkout");
             }
         }
     }

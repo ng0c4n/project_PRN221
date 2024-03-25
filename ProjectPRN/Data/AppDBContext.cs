@@ -17,13 +17,13 @@ namespace ProjectPRN.Data
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionBuilder)
         {
-            
-                var builder = new ConfigurationBuilder().
-                    SetBasePath(Directory.GetCurrentDirectory()).
-                    AddJsonFile("appsettings.json", optional: true, reloadOnChange: true);
 
-                IConfiguration configuration = builder.Build();
-                optionBuilder.UseSqlServer(configuration.GetConnectionString("DePurete"));
+            var builder = new ConfigurationBuilder().
+                SetBasePath(Directory.GetCurrentDirectory()).
+                AddJsonFile("appsettings.json", optional: true, reloadOnChange: true);
+
+            IConfiguration configuration = builder.Build();
+            optionBuilder.UseSqlServer(configuration.GetConnectionString("DePurete"));
         }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -76,14 +76,6 @@ namespace ProjectPRN.Data
                 entity.HasKey(a => a.ID);
 
                 entity.HasMany(a => a.Orders).WithOne(a => a.Status).HasForeignKey(a => a.StatusID);
-
-                entity.HasData(
-                   new Status { ID = 1, Name = "Cart" },
-                   new Status { ID = 2, Name = "Waiting" },
-                   new Status { ID = 3, Name = "Approved" },
-                   new Status { ID = 4, Name = "Shipping" },
-                   new Status { ID = 5, Name = "Finished" }
-                 );
             });
 
             modelBuilder.Entity<User>(entity =>
@@ -121,37 +113,30 @@ namespace ProjectPRN.Data
                 },
                 new UserRole
                 {
-                    ID= 3,
+                    ID = 3,
                     Name = "Master"
                 }
             );
             modelBuilder.Entity<Status>().HasData(
-                new Status
+                new Status { ID = 1, Name = "Cart" },
+                new Status { ID = 2, Name = "Waiting" },
+                new Status { ID = 3, Name = "Approved" },
+                new Status { ID = 4, Name = "Shipping" },
+                new Status { ID = 5, Name = "Finished" }
+            );
+            modelBuilder.Entity<User>().HasData(
+                new User
                 {
                     ID = 1,
-                    Name = "Done",
-                },
-                new Status
-                {
-                    ID = 2,
-                    Name = "Waiting",
-                },
-                new Status
-                {
-                    ID = 3,
-                    Name = "In Cart"
-                }
-            );
+                    Dob = DateTime.Now,
+                    Email = "admin@gmail.com",
+                    Name = "Admin",
+                    Password = "admin@gmail.com",
+                    Role = 3,
+                });
         }
         public static void InitiateData(AppDBContext context)
         {
-            context.Status.AddRange(
-                new Status { Name = "waiting" },
-                new Status { Name = "approved" },
-                new Status { Name = "shipping" },
-                new Status { Name = "finish" }
-                );
-            //context.Category.AddRange(new Category { Name = })
         }
     }
 }

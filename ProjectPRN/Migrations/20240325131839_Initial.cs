@@ -154,6 +154,18 @@ namespace ProjectPRN.Migrations
                 });
 
             migrationBuilder.InsertData(
+                table: "Status",
+                columns: new[] { "ID", "Name" },
+                values: new object[,]
+                {
+                    { 1, "Cart" },
+                    { 2, "Waiting" },
+                    { 3, "Approved" },
+                    { 4, "Shipping" },
+                    { 5, "Finished" }
+                });
+
+            migrationBuilder.InsertData(
                 table: "UserRole",
                 columns: new[] { "ID", "Name" },
                 values: new object[,]
@@ -162,6 +174,11 @@ namespace ProjectPRN.Migrations
                     { 2, "Admin" },
                     { 3, "Master" }
                 });
+
+            migrationBuilder.InsertData(
+                table: "User",
+                columns: new[] { "ID", "Dob", "Email", "Name", "Password", "Role" },
+                values: new object[] { 1, new DateTime(2024, 3, 25, 20, 18, 38, 593, DateTimeKind.Local).AddTicks(267), "admin@gmail.com", "Admin", "admin@gmail.com", 3 });
 
             migrationBuilder.CreateIndex(
                 name: "IX_Order_StatusID",
@@ -182,6 +199,12 @@ namespace ProjectPRN.Migrations
                 name: "IX_Product_CategoryID",
                 table: "Product",
                 column: "CategoryID");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_User_Email",
+                table: "User",
+                column: "Email",
+                unique: true);
 
             migrationBuilder.CreateIndex(
                 name: "IX_User_Role",

@@ -92,7 +92,7 @@ namespace ProjectPRN.Controllers
                 {
                     /*UserID = SaveUserId.GetUserID(HttpContext),*/
                     UserID = SaveUserId.GetSessionValue<int>(HttpContext,"UserId"),
-                    StatusID = 3,
+                    StatusID = 1,
                     CreatedDate = DateTime.Now,
                     UpdatedDate = DateTime.Now
                         

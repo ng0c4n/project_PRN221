@@ -16,9 +16,6 @@ PayOS payOS = new PayOS(configuration["Environment:PAYOS_CLIENT_ID"] ?? throw ne
                     configuration["Environment:PAYOS_API_KEY"] ?? throw new Exception("Cannot find environment"),
                     configuration["Environment:PAYOS_CHECKSUM_KEY"] ?? throw new Exception("Cannot find environment"));
 
-
-var builder = WebApplication.CreateBuilder(args);
-
 builder.Services.AddSingleton(payOS);
 
 builder.Services.AddAuthentication(options =>
@@ -53,10 +50,6 @@ builder.Services.AddSession(options =>
     options.Cookie.IsEssential = true;
 });
 
-using (var context = new AppDBContext())
-{
-    AppDBContext.InitiateData(context);
-}
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
