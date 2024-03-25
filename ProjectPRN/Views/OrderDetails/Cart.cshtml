@@ -92,7 +92,7 @@
 
                                         <div class="d-flex justify-content-between mb-4">
                                             <p class="mb-2">Total(Incl. taxes)</p>
-                                            <p class="mb-2">$@(Model.Sum(item => item.Price * item.Quantity) + 20)</p>
+                                            <p class="mb-2">$@(Model.Sum(item => item.Price * item.Quantity))</p>
                                         </div>
 
                                         <a class="btn btn-info btn-block btn-lg w-100" href="/Checkout">

@@ -29,7 +29,7 @@ namespace ProjectPRN.Controllers
         public async Task<IActionResult> Cart()
         {
             List<Cart> cart = new List<Cart>();
-            List<Order> order = await _context.Order.Where(or => or.UserID == SaveUserId.GetSessionValue<int>(HttpContext, "UserId")).ToListAsync();
+            List<Order> order = await _context.Order.Where(or => or.UserID == SaveUserId.GetSessionValue<int>(HttpContext, "UserId") && or.StatusID == 1).ToListAsync();
             if(order != null)
             {
                 foreach (var o in order)
