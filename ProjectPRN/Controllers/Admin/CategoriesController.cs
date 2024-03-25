@@ -6,11 +6,13 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using ProjectPRN.Data;
+using ProjectPRN.Filter;
 using ProjectPRN.Models;
 
 namespace ProjectPRN.Controllers.Admin;
 
 [Route("Admin/[controller]/[action]")]
+[FilterUser(RequireAdmin = true)]
 public class CategoriesController : Controller
 {
     private readonly AppDBContext _context;

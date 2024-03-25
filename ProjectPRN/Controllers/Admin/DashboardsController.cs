@@ -3,11 +3,13 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.CodeAnalysis;
 using Microsoft.EntityFrameworkCore;
 using ProjectPRN.Data;
+using ProjectPRN.Filter;
 using ProjectPRN.Utils;
 
 namespace ProjectPRN.Controllers.Admin;
 
 [Route("Admin/[controller]/[action]")]
+[FilterUser(RequireAdmin =true)]
 public class DashboardsController : Controller
 {
     private readonly AppDBContext _context;
@@ -114,7 +116,7 @@ public class DashboardsController : Controller
                 totalIncomeInYear += orderDetail.Quantity * orderDetail.Product.Price;
             }
         }
-        var userName = _context.User.FirstOrDefault(p => p.ID == SaveUserId.GetUserID(HttpContext)).Name;
+        var userName = _context.User.FirstOrDefault(p => p.ID == SaveUserId.GetSessionValue<int>(HttpContext, "UserId")).Name;
         //-------------
         var result = new
         {

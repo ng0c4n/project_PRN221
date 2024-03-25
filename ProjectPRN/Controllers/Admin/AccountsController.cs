@@ -2,12 +2,14 @@
 using Microsoft.AspNetCore.SignalR;
 using Microsoft.EntityFrameworkCore;
 using ProjectPRN.Data;
+using ProjectPRN.Filter;
 using ProjectPRN.Utils;
 using SignalRAssignment;
 
 namespace ProjectPRN.Controllers.Admin
 {
     [Route("Admin/[controller]/[action]")]
+    [FilterUser(RequireAdmin = true)]
     public class AccountsController : Controller
     {
         private readonly AppDBContext _context;
@@ -26,7 +28,7 @@ namespace ProjectPRN.Controllers.Admin
         [HttpGet]
         public IActionResult GetUser()
         {
-            var userId = SaveUserId.GetUserID(HttpContext);
+            var userId = SaveUserId.GetSessionValue<int>(HttpContext,"UserId");
             var myAccount = _context.User.FirstOrDefault(u => u.ID == userId);
             var users = _context.User.Where(u => u.Role < myAccount.Role)
                 .Include(p => p.UserRole);

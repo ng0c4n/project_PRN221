@@ -41,7 +41,7 @@ namespace ProjectPRN.Controllers
                     CookieAuthenticationDefaults.AuthenticationScheme,
                     new ClaimsPrincipal(claimsIdentity),
                     authProperties);
-                SaveUserId.SetUserID(HttpContext, user.ID.ToString());
+                SaveUserId.AddToSession(HttpContext,"UserId",user.ID);
                 if (user.Role > 1)
                 {
                     return Redirect("/admin/dashboards/index");

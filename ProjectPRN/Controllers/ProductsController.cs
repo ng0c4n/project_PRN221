@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.AspNetCore.SignalR;
 using Microsoft.EntityFrameworkCore;
 using ProjectPRN.Data;
+using ProjectPRN.Filter;
 using ProjectPRN.Models;
 using ProjectPRN.Utils;
 using SignalRAssignment;
@@ -88,11 +89,12 @@ namespace ProjectPRN.Controllers
 
                 order = new Order
                 {
-                    UserID = SaveUserId.GetUserID(HttpContext),
+                    /*UserID = SaveUserId.GetUserID(HttpContext),*/
+                    UserID = SaveUserId.GetSessionValue<int>(HttpContext,"UserId"),
                     StatusID = 3,
                     CreatedDate = DateTime.Now,
                     UpdatedDate = DateTime.Now
-
+                        
                 };
 
                 _context.Order.Add(order);
@@ -140,6 +142,7 @@ namespace ProjectPRN.Controllers
         }
 
         // GET: Products/Create
+        [FilterUser(RequireAdmin = true)]
         public IActionResult Create()
         {
             ViewData["CategoryID"] = new SelectList(_context.Category, "ID", "Name");
@@ -205,6 +208,7 @@ namespace ProjectPRN.Controllers
 
 
         // GET: Products/Edit/5
+        [FilterUser(RequireAdmin = true)]
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)
@@ -260,6 +264,7 @@ namespace ProjectPRN.Controllers
         }
 
         // GET: Products/Delete/5
+        [FilterUser(RequireAdmin = true)]
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null)
