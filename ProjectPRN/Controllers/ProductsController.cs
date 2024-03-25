@@ -38,6 +38,7 @@ namespace ProjectPRN.Controllers
             return View();
         }
 
+        [FilterUser(RequireAdmin = true)]
         public async Task<IActionResult> Index()
         {
             return View();
